@@ -22,4 +22,4 @@ sudo chown 1001 ./minio/data
 
 # Download tailscale
 curl -fsSL https://tailscale.com/install.sh | sh
-sudo tailscale up
+sudo tailscale up --advertise-exit-node
