@@ -1,4 +1,4 @@
-# Install docker engine
+# Setup docker
 sudo apt-get update
 sudo apt-get install \
     ca-certificates \
@@ -13,13 +13,13 @@ echo \
 sudo apt-get update
 sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin
 
-# Create folder
+# Setup folders
 mkdir -p ./nginx/conf
 mkdir -p ./certbot/conf
 mkdir -p ./certbot/www
 mkdir -p ./minio/data
 sudo chown 1001 ./minio/data
 
-# Download tailscale
+# Setup tailscale
 curl -fsSL https://tailscale.com/install.sh | sh
 sudo tailscale up --advertise-exit-node
