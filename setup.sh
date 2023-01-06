@@ -20,6 +20,13 @@ mkdir -p ./certbot/www
 mkdir -p ./minio/data
 sudo chown 1001 ./minio/data
 
+# Setup adguard
+sudo mkdir -p /etc/systemd/resolved.conf.d/
+mv ./adguard/adguardhome.conf /etc/systemd/resolved.conf.d/adguardhome.conf
+mv /etc/resolv.conf /etc/resolv.conf.backup
+ln -s /run/systemd/resolve/resolv.conf /etc/resolv.conf
+systemctl reload-or-restart systemd-resolved
+
 # Setup tailscale
 curl -fsSL https://tailscale.com/install.sh | sh
 sudo tailscale up --advertise-exit-node
