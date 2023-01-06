@@ -1,51 +1,55 @@
-version: '3'
+version: "3"
 
 services:
   nextjs:
     build: ./corliansa
     restart: unless-stopped
+    ports:
+      - 3000:3000
   nginx:
     image: nginx:latest
     ports:
       - 80:80
       - 443:443
     restart: always
-    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+    # uncomment after first certificate is generated
+    # command: '/bin/sh -c ''while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g "daemon off;"'''
     volumes:
       - ./nginx/conf/:/etc/nginx/conf.d/:ro
       - ./certbot/www/:/var/www/certbot/:ro
       - ./certbot/conf/:/etc/letsencrypt/:ro
   certbot:
     image: certbot/certbot:latest
-    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    # uncomment after first certificate is generated
+    # entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
     volumes:
       - ./certbot/www/:/var/www/certbot/:rw
-      - ./certbot/conf/:/etc/letsencrypt/:rw  
+      - ./certbot/conf/:/etc/letsencrypt/:rw
   minio:
-    image: 'bitnami/minio:latest'
+    image: bitnami/minio:latest
     restart: unless-stopped
     ports:
-      - '9000:9000'
-      - '9001:9001'
+      - 9000:9000
+      - 9001:9001
     volumes:
-      - './minio/data/:/data/:rw'
+      - ./minio/data/:/data/:rw
     environment:
       - MINIO_ROOT_USER
       - MINIO_ROOT_PASSWORD
 ### Currently running tailscale on the host machine, but this is how you would run it in a container
-  # Remember to use ephemeral and reusable key!
-  #
-  # tailscale:
-  #   image: 'tailscale/tailscale:latest'
-  #   restart: always
-  #   volumes:
-  #     - '/var/lib/:/var/lib/:rw'
-  #     - '/dev/net/tun/:/dev/net/tun/:rw'
-  #   environment:
-  #     - TS_AUTH_KEY
-  #     - TS_EXTRA_ARGS=--advertise-exit-node
-  #   privileged: true
-  #   cap_add:
-  #     - NET_ADMIN
-  #     - NET_RAW
-  #   network_mode: "host"
+# Remember to use ephemeral and reusable key!
+#
+# tailscale:
+#   image: 'tailscale/tailscale:latest'
+#   restart: always
+#   volumes:
+#     - '/var/lib/:/var/lib/:rw'
+#     - '/dev/net/tun/:/dev/net/tun/:rw'
+#   environment:
+#     - TS_AUTH_KEY
+#     - TS_EXTRA_ARGS=--advertise-exit-node
+#   privileged: true
+#   cap_add:
+#     - NET_ADMIN
+#     - NET_RAW
+#   network_mode: "host"
