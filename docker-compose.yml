@@ -55,6 +55,17 @@ services:
       - ./adguard/conf/:/opt/adguardhome/conf/:rw
       - ./adguard/work/:/opt/adguardhome/work/:rw
       - ./certbot/conf/:/etc/letsencrypt/:ro
+  portainer:
+    image: portainer/portainer-ce:latest
+    restart: always
+    # uncomment after ssl certificate is generated
+    # command: '--sslcert /certs/live/corliansa.xyz/fullchain.pem --sslkey /certs/live/corliansa.xyz/privkey.pem'
+    ports:
+      - 9443:9443
+    volumes:
+      - ./portainer/data/:/data/:rw
+      - /var/run/docker.sock/:/var/run/docker.sock/:rw
+      - ./certbot/conf/:/certs/:ro
 ### Currently running tailscale on the host machine, but this is how you would run it in a container
 # Remember to use ephemeral and reusable key!
 #

@@ -17,6 +17,7 @@ sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin
 mkdir -p ./nginx/conf
 mkdir -p ./certbot/conf
 mkdir -p ./certbot/www
+mkdir -p ./portainer/data
 mkdir -p ./minio/data
 sudo chown 1001 ./minio/data
 
