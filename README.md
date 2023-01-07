@@ -6,7 +6,7 @@
    `git clone https://github.com/corliansa/vps`
 1. Point your domain name to your vps
 1. Create a `.env` file based on `.env.example`
-1. Replace the domain name in `certbot.sh` with your own domain name
+1. Replace the domain name in `certbot.sh` and `docker-compose.yml` with your own domain name
 1. Replace the Dockerfile in `nextjs` directory with your own Dockerfile
 1. Replace the server name in `default.conf` files with your own server name
 1. Run `setup.sh` in the clone directory.
@@ -18,13 +18,15 @@
 
 ## Services
 
-- `minio` is a self hosted s3 server. It exposes port 9000 for the s3 and 9001 for the admin console. You can also route it using nginx instead of exposing the ports
+- `minio` is a self hosted s3 server. It exposes port 9000 for the s3 and 9001 for its admin console. You can also route it using nginx instead of exposing the ports
 - `adguard` Go to port 3000 for first setup. This repo reuse port 3000 for adguard home console after first setup, and uses port 3030 for https admin console. Like `minio`, you can choose to route the ports using nginx instead of exposing the ports.
 - `tailscale` creates a peer-to-peer mesh network, it can also be used as exit node so you can route your traffic to your vps, combined with adguard it can work as an ad blocking vpn.
+- `portainer` is a container manager. It exposes port 9443 for its admin console.
 
 ## Adding new services
 
 - You can add more service to the docker compose, or create a new `docker-compose.yml`. If you don't intend to route the exposed ports from the service using nginx, it's better to just create a new `docker-compose.yml`
+- You can add new stack or container using portainer from portainer admin console
 
 ## Troubleshooting
 
