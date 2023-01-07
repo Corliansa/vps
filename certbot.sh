@@ -1,1 +1,2 @@
 docker compose run --rm certbot certonly --webroot --webroot-path /var/www/certbot/ -d corliansa.xyz
+docker compose run --rm certbot certonly --webroot --webroot-path /var/www/certbot/ -d s3.corliansa.xyz
