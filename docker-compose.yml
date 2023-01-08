@@ -37,6 +37,8 @@ services:
     environment:
       - MINIO_ROOT_USER
       - MINIO_ROOT_PASSWORD
+      # uncomment after ssl certificate is generated
+      # - MINIO_SERVER_URL=https://s3.corliansa.xyz
   adguard:
     image: adguard/adguardhome:latest
     restart: always
