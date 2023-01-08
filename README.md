@@ -40,5 +40,5 @@
 ## Troubleshooting
 
 - The vps is not using adguard dns?\
-  Make sure `etc/systemd/resolved.conf.d/adguardhome.conf` and `/etc/resolv.conf` is configured properly\
-  Move `adguardhome.conf` to `etc/systemd/resolved.conf.d/adguardhome.conf` and `/etc/resolv.conf` needs to have 2 line, beginning with `nameserver` and `search`. This should be configured automatically by tailscale, but you need to change the nameserver to `nameserver 127.0.0.1` so that the vps will use the dns configured by adguard home
+  Make sure `etc/systemd/resolved.conf.d/adguardhome.conf` and `/etc/resolv.conf` and `/etc/systemd/resolved.conf` is configured properly\
+  Move `adguardhome.conf` to `/etc/systemd/resolved.conf.d/adguardhome.conf` and `/etc/resolv.conf` needs to have 2 line, beginning with `nameserver` and `search`. This should be configured automatically by tailscale, but if it's messed up you may need to correct it manually. Remember to check the values in `/etc/systemd/resolved.conf` too
