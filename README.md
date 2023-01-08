@@ -21,12 +21,16 @@
 - `minio` is a self hosted s3 server. It exposes port 9000 for the s3 and 9001 for its admin console. You can also route it using nginx instead of exposing the ports
   - You can install `mc` to manage minio. Use `mc alias set ALIAS HOSTNAME ACCESS_KEY SECRET_KEY` to create an alias for s3 compatible service
   - Use `mc admin config set ALIAS notify_webhook:IDENTIFIER endpoint="<ENDPOINT>" auth_token="<string>"` to create new webhook notifier and run `mc admin service restart ALIAS` to restart the service
-  - replace `ALIAS`, `HOSTNAME`, `ACCESS_KEY`, `SECRET_KEY`, `IDENTIFIER` with your own data. `ACCESS_KEY` should be minio admin username and `SECRET_KEY` should be minio admin password
+  - Run `mc event list ALIAS/BUCKET_NAME` to view all the set events in a bucket
+  - replace `ALIAS`, `HOSTNAME`, `ACCESS_KEY`, `SECRET_KEY`, `IDENTIFIER`, `BUCKET_NAME` with your own data. `ACCESS_KEY` should be minio admin username and `SECRET_KEY` should be minio admin password
   - Read the documentation for [mc](https://min.io/docs/minio/linux/reference/minio-mc.html) and [mc-admin](https://min.io/docs/minio/linux/reference/minio-mc-admin.html)
 - `adguard` Go to port 3000 for first setup. You can choose to reuse port 3000 for adguard home console in first setup. Like `minio`, you can choose to route the ports using nginx instead of exposing the ports.
   - It is recommended to setup a ssl certificate, go to Settings > Encryption to set it up. The path to the ssl certificate should be `/certs/live/YOUR_DOMAIN/fullchain.pem` and `/certs/live/YOUR_DOMAIN/privkey.pem` for the private key. replace `YOUR_DOMAIN` with your own domain name
 - `tailscale` creates a peer-to-peer mesh network, it can also be used as exit node so you can route your traffic to your vps, combined with adguard it can work as an ad blocking vpn.
+  - To enable use as exit node, Go to tailscale admin and click on Machines. Open your node's route settings and switch on `Use as exit node`
 - `portainer` is a container manager. It exposes port 9443 for its admin console.
+  - For security reason, portainer's admin console first setup will shut down if you don't set it up for some time. You will need to restart portainer to do the first setup
+  - Portainer is really helpful to access container logs, you can also run commands inside of the container using portainer admin console
 
 ## Adding new services
 
@@ -36,5 +40,5 @@
 ## Troubleshooting
 
 - The vps is not using adguard dns?\
- Make sure `etc/systemd/resolved.conf.d/adguardhome.conf` and `/etc/resolv.conf` is configured properly\
- Move `adguardhome.conf` to `etc/systemd/resolved.conf.d/adguardhome.conf` and `/etc/resolv.conf` needs to have 2 line, beginning with `nameserver` and `search`. This should be configured automatically by tailscale, but you need to change the nameserver to `nameserver 127.0.0.1` so that the vps will use the dns configured by adguard home
+  Make sure `etc/systemd/resolved.conf.d/adguardhome.conf` and `/etc/resolv.conf` is configured properly\
+  Move `adguardhome.conf` to `etc/systemd/resolved.conf.d/adguardhome.conf` and `/etc/resolv.conf` needs to have 2 line, beginning with `nameserver` and `search`. This should be configured automatically by tailscale, but you need to change the nameserver to `nameserver 127.0.0.1` so that the vps will use the dns configured by adguard home
