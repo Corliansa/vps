@@ -3,7 +3,7 @@ version: "3"
 services:
   nextjs:
     build: ./nextjs
-    restart: unless-stopped
+    restart: always
   nginx:
     image: nginx:latest
     ports:
@@ -24,13 +24,16 @@ services:
       - ./certbot/www/:/var/www/certbot/:rw
       - ./certbot/conf/:/etc/letsencrypt/:rw
   minio:
-    image: bitnami/minio:latest
-    restart: unless-stopped
+    image: minio/minio:latest
+    restart: always
     ports:
       - 9000:9000
       - 9001:9001
     volumes:
       - ./minio/data/:/data/:rw
+      # uncomment after ssl certificate is generated
+      # - ./certbot/conf/live/s3.corliansa.xyz/:/root/.minio/certs/:rw
+    command: "server /data --console-address ':9001'"
     environment:
       - MINIO_ROOT_USER
       - MINIO_ROOT_PASSWORD
@@ -54,7 +57,7 @@ services:
     volumes:
       - ./adguard/conf/:/opt/adguardhome/conf/:rw
       - ./adguard/work/:/opt/adguardhome/work/:rw
-      - ./certbot/conf/:/etc/letsencrypt/:ro
+      - ./certbot/conf/:/certs/:ro
   portainer:
     image: portainer/portainer-ce:latest
     restart: always
