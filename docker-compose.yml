@@ -3,9 +3,11 @@ version: "3"
 services:
   nextjs:
     build: ./nextjs
+    container_name: nextjs
     restart: always
   nginx:
     image: nginx:latest
+    container_name: nginx
     ports:
       - 80:80
       - 443:443
@@ -18,6 +20,7 @@ services:
       - ./certbot/conf/:/etc/letsencrypt/:ro
   certbot:
     image: certbot/certbot:latest
+    container_name: certbot
     # uncomment after ssl certificate is generated
     # entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
     volumes:
@@ -25,6 +28,7 @@ services:
       - ./certbot/conf/:/etc/letsencrypt/:rw
   minio:
     image: minio/minio:latest
+    container_name: minio
     restart: always
     ports:
       - 9000:9000
@@ -41,6 +45,7 @@ services:
       # - MINIO_SERVER_URL=https://s3.corliansa.xyz
   adguard:
     image: adguard/adguardhome:latest
+    container_name: adguard
     restart: always
     # network_mode: host
     ports:
@@ -63,6 +68,7 @@ services:
       - ./certbot/conf/:/certs/:ro
   portainer:
     image: portainer/portainer-ce:latest
+    container_name: portainer
     restart: always
     # uncomment after ssl certificate is generated
     # command: '--sslcert /certs/live/corliansa.xyz/fullchain.pem --sslkey /certs/live/corliansa.xyz/privkey.pem'
