@@ -78,6 +78,50 @@ services:
       - ./portainer/data/:/data/:rw
       - /var/run/docker.sock/:/var/run/docker.sock/:rw
       - ./certbot/conf/:/certs/:ro
+  coolify:
+    image: coollabsio/coolify:latest
+    restart: always
+    container_name: coolify
+    ports:
+      - 5000:3000
+    volumes:
+      - ./coolify/backups/:/app/backups/:rw
+      - ./coolify/db/:/app/db/:rw
+      - ./coolify/logs/:/app/logs/:rw
+      - ./coolify/ssl/:/app/ssl/:rw
+      - ./certbot/www/.well-known/acme-challenge/:/etc/traefik/acme/:rw
+      - ./certbot/conf/:/etc/letsencrypt/:rw
+      - /var/run/docker.sock/:/var/run/docker.sock/:rw
+    environment:
+      - COOLIFY_APP_ID
+      - COOLIFY_SECRET_KEY
+      - COOLIFY_DATABASE_URL=file:../db/prod.db
+      - COOLIFY_IS_ON=docker
+      - COOLIFY_WHITE_LABELED=false
+      - COOLIFY_WHITE_LABELED_ICON=
+      - COOLIFY_AUTO_UPDATE=false
+  fluent-bit:
+    image: coollabsio/coolify-fluent-bit:1.0.0
+    container_name: coolify-fluentbit
+    volumes:
+      - ./coolify/logs/:/app/logs/:rw
+  coolify-proxy:
+    image: traefik:latest
+    container_name: coolify-proxy
+    restart: always
+    volumes:
+      - ./certbot/www/.well-known/acme-challenge/:/etc/traefik/acme/:rw
+      - /var/run/docker.sock/:/var/run/docker.sock/:rw
+    command: "--entrypoints.web.address=:80 --entrypoints.web.forwardedHeaders.insecure=true --entrypoints.websecure.address=:443 --entrypoints.websecure.forwardedHeaders.insecure=true --providers.docker=true --providers.docker.exposedbydefault=false --providers.http.endpoint=http://coolify:3000/webhooks/traefik/main.json --providers.http.pollTimeout=5s --certificatesresolvers.letsencrypt.acme.httpchallenge=true --certificatesresolvers.letsencrypt.acme.storage=/etc/traefik/acme/acme.json --certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web --log.level=error"
+    networks:
+      - default
+      - coolify
+
+networks:
+  default:
+  coolify:
+    attachable: true
+    name: coolify
 ### Currently running tailscale on the host machine, but this is how you would run it in a container
 # Remember to use ephemeral and reusable key!
 #
