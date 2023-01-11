@@ -101,5 +101,4 @@ networks:
   default:
   coolify:
     external: true
-    attachable: true
     name: coolify
