@@ -1,59 +1,13 @@
 version: "3"
 
 services:
-  nextjs:
-    build: ./nextjs
-    container_name: nextjs
-    restart: always
-  nginx:
-    image: nginx:latest
-    container_name: nginx
-    ports:
-      - 80:80
-      - 443:443
-    restart: always
-    # uncomment after ssl certificate is generated
-    # command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
-    volumes:
-      - type: bind
-        source: ./nginx/nginx.conf
-        target: /etc/nginx/nginx.conf
-        read_only: true
-      - ./nginx/conf/:/etc/nginx/conf.d/:ro
-      - ./certbot/www/:/var/www/certbot/:ro
-      - ./certbot/conf/:/etc/letsencrypt/:ro
-  certbot:
-    image: certbot/certbot:latest
-    container_name: certbot
-    # uncomment after ssl certificate is generated
-    # entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
-    volumes:
-      - ./certbot/www/:/var/www/certbot/:rw
-      - ./certbot/conf/:/etc/letsencrypt/:rw
-  adguard:
-    image: adguard/adguardhome:latest
-    container_name: adguard
-    restart: always
-    ports:
-      - 53:53/tcp
-      - 53:53/udp
-      - 3000:3000/tcp
-      - 3443:443/tcp
-      - 3443:443/udp
-      - 853:853/tcp
-      - 853:853/udp
-    volumes:
-      - ./adguard/conf/:/opt/adguardhome/conf/:rw
-      - ./adguard/work/:/opt/adguardhome/work/:rw
-      - ./certbot/conf/:/certs/:ro
   portainer:
     image: portainer/portainer-ce:latest
     container_name: portainer
     restart: always
-    # uncomment after ssl certificate is generated
-    # command: '--sslcert /certs/live/corliansa.xyz/fullchain.pem --sslkey /certs/live/corliansa.xyz/privkey.pem'
     ports:
       - 9443:9443
+      - 9000:9000
     volumes:
       - ./portainer/data/:/data/:rw
       - /var/run/docker.sock/:/var/run/docker.sock/:rw
@@ -63,7 +17,7 @@ services:
     restart: always
     container_name: coolify
     ports:
-      - 5000:3000
+      - 3000:3000
     volumes:
       - ./coolify/backups/:/app/backups/:rw
       - ./coolify/db/:/app/db/:rw
@@ -89,6 +43,9 @@ services:
     image: traefik:latest
     container_name: coolify-proxy
     restart: always
+    ports:
+      - 80:80
+      - 443:443
     volumes:
       - ./certbot/www/:/etc/traefik/acme/:rw
       - /var/run/docker.sock/:/var/run/docker.sock/:rw

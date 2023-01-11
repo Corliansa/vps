@@ -16,25 +16,5 @@ if [ ! -x "$(command -v docker)" ]; then
   sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin
 fi
 
-# Setup folders
-mkdir -p ./nginx/conf
-mkdir -p ./certbot/conf
-mkdir -p ./certbot/www
-mkdir -p ./portainer/data
-
-# Setup adguard
-sudo mkdir -p /etc/systemd/resolved.conf.d/
-mv ./adguard/adguardhome.conf /etc/systemd/resolved.conf.d/adguardhome.conf
-mv /etc/resolv.conf /etc/resolv.conf.backup
-ln -s /run/systemd/resolve/resolv.conf /etc/resolv.conf
-systemctl reload-or-restart systemd-resolved
-
-# Setup tailscale
-curl -fsSL https://tailscale.com/install.sh | sh
-sudo tailscale up --advertise-exit-node
-grep 'net.ipv4.ip_forward = 1' /etc/sysctl.d/99-tailscale.conf || echo 'net.ipv4.ip_forward = 1' | sudo tee -a /etc/sysctl.d/99-tailscale.conf
-grep 'net.ipv6.conf.all.forwarding = 1' /etc/sysctl.d/99-tailscale.conf || echo 'net.ipv6.conf.all.forwarding = 1' | sudo tee -a /etc/sysctl.d/99-tailscale.conf
-sudo sysctl -p /etc/sysctl.d/99-tailscale.conf
-
 # Create docker network
 docker network create coolify --attachable
