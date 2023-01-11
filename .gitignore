@@ -1,3 +1,2 @@
 .env
 certbot/
-minio/data/

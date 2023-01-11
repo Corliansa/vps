@@ -21,8 +21,6 @@ mkdir -p ./nginx/conf
 mkdir -p ./certbot/conf
 mkdir -p ./certbot/www
 mkdir -p ./portainer/data
-mkdir -p ./minio/data
-sudo chown 1001 ./minio/data
 
 # Setup adguard
 sudo mkdir -p /etc/systemd/resolved.conf.d/
