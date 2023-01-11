@@ -13,8 +13,8 @@
    This will setup docker, folders, adguard config and tailscale config. Currently tailscale is being run directly on host, but you can run it in docker if you want. You need to authenticate tailscale with your account in this step.
 1. Run your docker compose `docker compose up`
 1. Run `certbot.sh`. You only need to do this once, afther that uncomment the line in `docker-compose.yml`. This will setup automatic certificate renewal and reload nginx server
-1. Replace `nginx/conf/default.conf` with `nginx/default.conf` and move `nginx/app.conf` to `nginx/conf/app.conf` to enable https
-1. Reload your docker compose `docker compose down && docker compose up`
+2. Delete `nginx/conf/default.conf` and move `nginx/default.stream.conf` and `nginx/app.conf` to `nginx/conf/` to enable https
+3. Reload your docker compose `docker compose down && docker compose up`
 
 ## Services
 
