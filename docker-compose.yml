@@ -30,42 +30,18 @@ services:
     volumes:
       - ./certbot/www/:/var/www/certbot/:rw
       - ./certbot/conf/:/etc/letsencrypt/:rw
-  minio:
-    image: minio/minio:latest
-    container_name: minio
-    restart: always
-    ports:
-      - 9000:9000
-      - 9001:9001
-    volumes:
-      - ./minio/data/:/data/:rw
-      # uncomment after ssl certificate is generated
-      # - ./certbot/conf/live/s3.corliansa.xyz/:/root/.minio/certs/:rw
-    command: "server /data --console-address ':9001'"
-    environment:
-      - MINIO_ROOT_USER
-      - MINIO_ROOT_PASSWORD
-      # uncomment after ssl certificate is generated
-      # - MINIO_SERVER_URL=https://s3.corliansa.xyz
   adguard:
     image: adguard/adguardhome:latest
     container_name: adguard
     restart: always
-    # network_mode: host
     ports:
       - 53:53/tcp
       - 53:53/udp
-      # - 67:67/udp
-      # - 68:68/udp
       - 3000:3000/tcp
       - 3443:443/tcp
       - 3443:443/udp
       - 853:853/tcp
-      - 784:784/udp
       - 853:853/udp
-      - 8853:8853/udp
-      # - 5443:5443/tcp
-      # - 5443:5443/udp
     volumes:
       - ./adguard/conf/:/opt/adguardhome/conf/:rw
       - ./adguard/work/:/opt/adguardhome/work/:rw
@@ -127,20 +103,3 @@ networks:
     external: true
     attachable: true
     name: coolify
-### Currently running tailscale on the host machine, but this is how you would run it in a container
-# Remember to use ephemeral and reusable key!
-#
-# tailscale:
-#   image: 'tailscale/tailscale:latest'
-#   restart: always
-#   volumes:
-#     - '/var/lib/:/var/lib/:rw'
-#     - '/dev/net/tun/:/dev/net/tun/:rw'
-#   environment:
-#     - TS_AUTH_KEY
-#     - TS_EXTRA_ARGS=--advertise-exit-node
-#   privileged: true
-#   cap_add:
-#     - NET_ADMIN
-#     - NET_RAW
-#   network_mode: "host"
