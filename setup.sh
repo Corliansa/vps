@@ -16,12 +16,6 @@ if [ ! -x "$(command -v docker)" ]; then
   sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin
 fi
 
-# Setup folders
-mkdir -p ./nginx/conf
-mkdir -p ./certbot/conf
-mkdir -p ./certbot/www
-mkdir -p ./portainer/data
-
 # Setup adguard
 sudo mkdir -p /etc/systemd/resolved.conf.d/
 mv ./adguard/adguardhome.conf /etc/systemd/resolved.conf.d/adguardhome.conf
