@@ -7,9 +7,8 @@
 1. Point your domain name to your vps
 1. Create a `.env` file based on `.env.example`
 1. Replace the Dockerfile in `nextjs` directory with your own Dockerfile
-1. Run `replacer.sh <YOUR_DOMAIN>` to replace current domain and server name configuration with your own domain
-1. Run `setup.sh` in the clone directory.
-   This will setup docker, folders, adguard config and tailscale config. You need to authenticate tailscale with your account in this step.
+1. Run `replacer.sh <YOUR_DOMAIN>` in the clone directory to replace current domain and server name configuration with your own domain
+1. Run `setup.sh` in the clone directory to setup docker, folders, adguard config and tailscale config. You need to authenticate tailscale with your account in this step.
 1. Run your docker compose `docker compose up`
 1. Run `certbot.sh` to generate your first ssl certificate. You only need to do this once, afther that uncomment the line in `docker-compose.yml`. This will setup automatic certificate renewal and reload nginx server
 1. Run `conf.sh` to delete `nginx/conf/default.conf` and move `nginx/default.stream.conf` and `nginx/app.conf` to `nginx/conf/` folder and to enable automatic ssl certificate renewal
