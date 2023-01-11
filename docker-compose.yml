@@ -15,6 +15,10 @@ services:
     # uncomment after ssl certificate is generated
     # command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
     volumes:
+      - type: bind
+        source: ./nginx/nginx.conf
+        target: /etc/nginx/nginx.conf
+        read_only: true
       - ./nginx/conf/:/etc/nginx/conf.d/:ro
       - ./certbot/www/:/var/www/certbot/:ro
       - ./certbot/conf/:/etc/letsencrypt/:ro
@@ -120,6 +124,7 @@ services:
 networks:
   default:
   coolify:
+    external: true
     attachable: true
     name: coolify
 ### Currently running tailscale on the host machine, but this is how you would run it in a container
