@@ -4,6 +4,9 @@
 
 1. Clone this repo
    `git clone https://github.com/corliansa/vps`
+1. Point your domain name to your vps
+1. Create a `.env` file based on `.env.example`
+1. Run `/setup.sh` in the clone directory
 1. Reload your docker compose `docker compose up`. Use -d flag to run docker compose in detached mode
 
 ## Services
