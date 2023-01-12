@@ -92,7 +92,7 @@ services:
     volumes:
       - ./certbot/www/:/etc/traefik/acme/:rw
       - /var/run/docker.sock/:/var/run/docker.sock/:rw
-    command: "--entrypoints.web.address=:80 --entrypoints.web.forwardedHeaders.insecure=true --entrypoints.websecure.address=:443 --entrypoints.websecure.forwardedHeaders.insecure=true --providers.docker=true --providers.docker.exposedbydefault=false --providers.http.endpoint=http://coolify:3000/webhooks/traefik/main.json --providers.http.pollTimeout=5s --certificatesresolvers.letsencrypt.acme.httpchallenge=true --certificatesresolvers.letsencrypt.acme.storage=/etc/traefik/acme/acme.json --certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web --log.level=error"
+    command: "--accesslog=true --entrypoints.web.address=:80 --entrypoints.web.forwardedHeaders.insecure=true --entrypoints.websecure.address=:443 --entrypoints.websecure.forwardedHeaders.insecure=true --providers.docker=true --providers.docker.exposedbydefault=false --providers.http.endpoint=http://coolify:3000/webhooks/traefik/main.json --providers.http.pollTimeout=5s --certificatesresolvers.letsencrypt.acme.httpchallenge=true --certificatesresolvers.letsencrypt.acme.storage=/etc/traefik/acme/acme.json --certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web --log.level=error"
     networks:
       - default
       - coolify
