@@ -17,7 +17,8 @@
 ## Services
 
 - `adguard` is a self hostable dns server. You can use it to block ads & tracker network wide
-  - Go to port 3000 for first setup. You can choose to reuse port 3000 for adguard home console in first setup. You can choose to route the ports using nginx instead of exposing the ports.
+  - Adguard's port 3000 is exposed on port 5000 on host network
+  - Go to port 5000 on host for first setup. You can choose to reuse port 3000 for adguard home console in first setup, it will then still be exposed on port 5000 on host. You can choose to route the ports using nginx instead of exposing the ports.
   - It is recommended to setup a ssl certificate, go to Settings > Encryption to set it up. The path to the ssl certificate should be `/certs/live/YOUR_DOMAIN/fullchain.pem` and `/certs/live/YOUR_DOMAIN/privkey.pem` for the private key. replace `YOUR_DOMAIN` with your own domain name. Currently the configured port in the docker compose is 3443:443
 - `tailscale` creates a peer-to-peer mesh network, it can also be used as exit node so you can route your traffic to your vps, combined with adguard it can work as an ad blocking vpn.
   - To enable use as exit node, Go to tailscale admin and click on Machines. Open your node's route settings and switch on `Use as exit node`

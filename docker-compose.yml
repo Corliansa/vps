@@ -37,7 +37,7 @@ services:
     ports:
       - 53:53/tcp
       - 53:53/udp
-      - 3000:3000/tcp
+      - 5000:3000/tcp
       - 3443:443/tcp
       - 3443:443/udp
       - 853:853/tcp
@@ -63,7 +63,7 @@ services:
     restart: always
     container_name: coolify
     ports:
-      - 5000:3000
+      - 3000:3000
     volumes:
       - ./coolify/backups/:/app/backups/:rw
       - ./coolify/db/:/app/db/:rw
