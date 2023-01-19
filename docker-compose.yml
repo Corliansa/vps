@@ -86,7 +86,6 @@ services:
   certs-dumper:
     image: ldez/traefik-certs-dumper:latest
     container_name: certs-dumper
-    restart: always
     volumes:
       - ./letsencrypt/certs/:/certs/:rw
       - ./letsencrypt/acme/:/acme/:ro
