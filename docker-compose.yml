@@ -62,8 +62,6 @@ services:
       - ./coolify/logs/:/app/logs/:rw
   replacer:
     image: corliansa/ext-replacer:latest
-    depends_on:
-      - coolify
     container_name: replacer
     restart: always
     volumes:
@@ -73,8 +71,6 @@ services:
       - JSON_PATH=/usr/app/data/data.js
   coolify-proxy:
     image: traefik:latest
-    depends_on:
-      - replacer
     container_name: coolify-proxy
     ports:
       - 80:80
@@ -87,6 +83,20 @@ services:
     networks:
       - default
       - coolify
+  certs-dumper:
+    image: ldez/traefik-certs-dumper:latest
+    container_name: certs-dumper
+    restart: always
+    volumes:
+      - ./letsencrypt/certs/:/certs/:rw
+      - ./letsencrypt/acme/:/acme/:ro
+    entrypoint: sh -c '
+      apk add jq
+      ; while ! [ -e /data/acme.json ]
+      || ! [ `jq ".[] | .Certificates | length" /data/acme.json` != 0 ]; do
+      sleep 1
+      ; done
+      && traefik-certs-dumper file --version v2 --watch --source /acme/acme.json --dest /certs --domain-subdir=true'
 
 networks:
   default:
