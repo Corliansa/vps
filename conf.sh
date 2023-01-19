@@ -1,1 +1,0 @@
-sed -z 's/# uncomment after ssl certificate is generated\n\s*#\s*//g' -i docker-compose.yml

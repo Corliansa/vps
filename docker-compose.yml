@@ -25,8 +25,7 @@ services:
     image: portainer/portainer-ce:latest
     container_name: portainer
     restart: always
-    # uncomment after ssl certificate is generated
-    # command: '--sslcert /certs/corliansa.xyz/certificate.crt --sslkey /certs/corliansa.xyz/privatekey.key'
+    command: "--sslcert /certs/corliansa.xyz/certificate.crt --sslkey /certs/corliansa.xyz/privatekey.key"
     ports:
       - 9443:9443
     volumes:
@@ -66,6 +65,8 @@ services:
     restart: always
     volumes:
       - ./replacer/data/:/usr/app/data/:rw
+      - /bin/tailscale:/bin/tailscale:ro
+      - /var/run/tailscale/tailscaled.sock:/var/run/tailscale/tailscaled.sock:ro
     environment:
       - HTTP_PATH=http://coolify:3000/webhooks/traefik/main.json
       - JSON_PATH=/usr/app/data/data.js

@@ -57,5 +57,12 @@ module.exports = {
         },
       },
     },
+    middlewares: {
+      "tailscale-auth": {
+        forwardAuth: {
+          address: "http://replacer:8080/auth",
+        },
+      },
+    },
   },
 };
