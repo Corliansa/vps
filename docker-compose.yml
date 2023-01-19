@@ -5,31 +5,6 @@ services:
     build: ./nextjs
     container_name: nextjs
     restart: always
-  nginx:
-    image: nginx:latest
-    container_name: nginx
-    ports:
-      - 80:80
-      - 443:443
-    restart: always
-    # uncomment after ssl certificate is generated
-    # command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
-    volumes:
-      - type: bind
-        source: ./nginx/nginx.conf
-        target: /etc/nginx/nginx.conf
-        read_only: true
-      - ./nginx/conf/:/etc/nginx/conf.d/:ro
-      - ./certbot/www/:/var/www/certbot/:ro
-      - ./certbot/conf/:/etc/letsencrypt/:ro
-  certbot:
-    image: certbot/certbot:latest
-    container_name: certbot
-    # uncomment after ssl certificate is generated
-    # entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
-    volumes:
-      - ./certbot/www/:/var/www/certbot/:rw
-      - ./certbot/conf/:/etc/letsencrypt/:rw
   adguard:
     image: adguard/adguardhome:latest
     container_name: adguard
@@ -45,7 +20,7 @@ services:
     volumes:
       - ./adguard/conf/:/opt/adguardhome/conf/:rw
       - ./adguard/work/:/opt/adguardhome/work/:rw
-      - ./certbot/conf/:/certs/:ro
+      - ./letsencrypt/certs/:/certs/:ro
   portainer:
     image: portainer/portainer-ce:latest
     container_name: portainer
@@ -57,7 +32,7 @@ services:
     volumes:
       - ./portainer/data/:/data/:rw
       - /var/run/docker.sock/:/var/run/docker.sock/:rw
-      - ./certbot/conf/:/certs/:ro
+      - ./letsencrypt/certs/:/certs/:ro
   coolify:
     image: coollabsio/coolify:latest
     restart: always
@@ -69,8 +44,8 @@ services:
       - ./coolify/db/:/app/db/:rw
       - ./coolify/logs/:/app/logs/:rw
       - ./coolify/ssl/:/app/ssl/:rw
-      - ./certbot/www/:/etc/traefik/acme/:rw
-      - ./certbot/conf/:/etc/letsencrypt/:rw
+      - ./letsencrypt/acme/:/etc/traefik/acme/:rw
+      - ./letsencrypt/certs/:/etc/letsencrypt/:rw
       - /var/run/docker.sock/:/var/run/docker.sock/:rw
     environment:
       - COOLIFY_APP_ID
@@ -85,12 +60,25 @@ services:
     container_name: coolify-fluentbit
     volumes:
       - ./coolify/logs/:/app/logs/:rw
-  coolify-proxy:
-    image: traefik:latest
-    container_name: coolify-proxy
+  replacer:
+    image: corliansa/ext-replacer:latest
+    depends_on:
+      - coolify
+    container_name: replacer
     restart: always
     volumes:
-      - ./certbot/www/:/etc/traefik/acme/:rw
+      - ./replacer/data/:/usr/app/data/:rw
+    environment:
+      - HTTP_PATH=http://coolify:3000/webhooks/traefik/main.json
+      - JSON_PATH=/usr/app/data/data.js
+  traefik:
+    image: traefik:latest
+    depends_on:
+      - replacer
+    container_name: traefik
+    restart: always
+    volumes:
+      - ./letsencrypt/acme/:/etc/traefik/acme/:rw
       - /var/run/docker.sock/:/var/run/docker.sock/:rw
     command: "--accesslog=true --entrypoints.web.address=:80 --entrypoints.web.forwardedHeaders.insecure=true --entrypoints.websecure.address=:443 --entrypoints.websecure.forwardedHeaders.insecure=true --providers.docker=true --providers.docker.exposedbydefault=false --providers.http.endpoint=http://coolify:3000/webhooks/traefik/main.json --providers.http.pollTimeout=5s --certificatesresolvers.letsencrypt.acme.httpchallenge=true --certificatesresolvers.letsencrypt.acme.storage=/etc/traefik/acme/acme.json --certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web --log.level=error"
     networks:
