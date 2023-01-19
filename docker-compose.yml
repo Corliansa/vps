@@ -96,7 +96,7 @@ services:
       || ! [ `jq ".[] | .Certificates | length" /data/acme.json` != 0 ]; do
       sleep 1
       ; done
-      && traefik-certs-dumper file --version v2 --watch --source /acme/acme.json --dest /certs --domain-subdir=true'
+      && traefik-certs-dumper file --version v2 --source /acme/acme.json --dest /certs --domain-subdir=true'
 
 networks:
   default:
