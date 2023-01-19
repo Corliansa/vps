@@ -30,7 +30,7 @@ services:
       - 9443:9443
     volumes:
       - ./portainer/data/:/data/:rw
-      - /var/run/docker.sock/:/var/run/docker.sock/:rw
+      - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./letsencrypt/certs/:/certs/:ro
   coolify:
     image: coollabsio/coolify:latest
@@ -45,7 +45,7 @@ services:
       - ./coolify/ssl/:/app/ssl/:rw
       - ./letsencrypt/acme/:/etc/traefik/acme/:rw
       - ./letsencrypt/certs/:/etc/letsencrypt/:rw
-      - /var/run/docker.sock/:/var/run/docker.sock/:rw
+      - /var/run/docker.sock:/var/run/docker.sock:ro
     environment:
       - COOLIFY_APP_ID
       - COOLIFY_SECRET_KEY
@@ -64,7 +64,7 @@ services:
     container_name: replacer
     restart: always
     volumes:
-      - ./replacer/data/:/usr/app/data/:rw
+      - ./replacer/data/:/usr/app/data/:ro
       - /bin/tailscale:/bin/tailscale:ro
       - /var/run/tailscale/tailscaled.sock:/var/run/tailscale/tailscaled.sock:ro
     environment:
@@ -79,7 +79,7 @@ services:
     restart: always
     volumes:
       - ./letsencrypt/acme/:/etc/traefik/acme/:rw
-      - /var/run/docker.sock/:/var/run/docker.sock/:rw
+      - /var/run/docker.sock:/var/run/docker.sock:ro
     command: "--serversTransport.insecureSkipVerify=true --accesslog=true --api.dashboard=true --entrypoints.web.address=:80 --entrypoints.web.forwardedHeaders.insecure=true --entrypoints.websecure.address=:443 --entrypoints.websecure.forwardedHeaders.insecure=true --providers.docker=true --providers.docker.exposedbydefault=false --providers.http.endpoint=http://replacer:8080 --providers.http.pollTimeout=5s --certificatesresolvers.letsencrypt.acme.httpchallenge=true --certificatesresolvers.letsencrypt.acme.storage=/etc/traefik/acme/acme.json --certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web --log.level=error"
     networks:
       - default
