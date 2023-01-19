@@ -76,6 +76,9 @@ services:
     depends_on:
       - replacer
     container_name: traefik
+    ports:
+      - 80:80
+      - 443:443
     restart: always
     volumes:
       - ./letsencrypt/acme/:/etc/traefik/acme/:rw
