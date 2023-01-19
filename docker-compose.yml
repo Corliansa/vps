@@ -86,16 +86,17 @@ services:
   certs-dumper:
     image: ldez/traefik-certs-dumper:latest
     container_name: certs-dumper
+    restart: always
     volumes:
       - ./letsencrypt/certs/:/certs/:rw
       - ./letsencrypt/acme/:/acme/:ro
     entrypoint: sh -c '
       apk add jq
-      ; while ! [ -e /data/acme.json ]
+      ; while ! [ -e /acme/acme.json ]
       || ! [ `jq ".[] | .Certificates | length" /data/acme.json` != 0 ]; do
       sleep 1
       ; done
-      && traefik-certs-dumper file --version v2 --source /acme/acme.json --dest /certs --domain-subdir=true'
+      && traefik-certs-dumper file --version v2 --watch --source /acme/acme.json --dest /certs --domain-subdir=true'
 
 networks:
   default:
