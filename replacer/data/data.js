@@ -55,6 +55,23 @@ module.exports = {
       "coolify-3000-/-secure": {
         middlewares: ["tailscale-auth"],
       },
+      "traefik-router": {
+        entrypoints: ["web"],
+        rule: "Host(`traefik.corliansa.xyz`) && PathPrefix(`/`)",
+        service: "noop",
+        priority: 2,
+        middlewares: ["redirect-to-https"],
+      },
+      "traefik-router-secure": {
+        entrypoints: ["websecure"],
+        rule: "Host(`traefik.corliansa.xyz`) && PathPrefix(`/`)",
+        service: "api@internal",
+        priority: 2,
+        tls: {
+          certresolver: "letsencrypt",
+        },
+        middlewares: ["tailscale-auth"],
+      },
     },
     services: {
       nextjs: {
