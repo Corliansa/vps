@@ -26,7 +26,7 @@ services:
     container_name: portainer
     restart: always
     # uncomment after ssl certificate is generated
-    # command: '--sslcert /certs/live/corliansa.xyz/fullchain.pem --sslkey /certs/live/corliansa.xyz/privkey.pem'
+    # command: '--sslcert /certs/corliansa.xyz/certificate.crt --sslkey /certs/corliansa.xyz/privatekey.key'
     ports:
       - 9443:9443
     volumes:

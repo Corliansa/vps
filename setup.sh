@@ -32,3 +32,6 @@ sudo sysctl -p /etc/sysctl.d/99-tailscale.conf
 
 # Create docker network
 docker network create coolify --attachable
+
+# Install certs dumper
+curl -sfL https://raw.githubusercontent.com/ldez/traefik-certs-dumper/master/godownloader.sh | bash -s -- -b $(go env GOPATH)/bin v2.8.1

@@ -1,4 +1,3 @@
 #!/bin/sh
 
-./extract.sh corliansa.xyz
-./extract.sh dns.corliansa.xyz
+traefik-certs-dumper file --version v2 --source ./letsencrypt/acme/acme.json --domain-subdir=true --dest ./letsencrypt/certs --watch
