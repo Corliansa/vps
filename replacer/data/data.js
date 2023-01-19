@@ -4,7 +4,7 @@ module.exports = {
       "nextjs-router": {
         entrypoints: ["web"],
         rule: "Host(`corliansa.xyz`) && PathPrefix(`/`)",
-        service: "nextjs",
+        service: "noop",
         priority: 2,
         middlewares: ["redirect-to-https"],
       },
@@ -14,14 +14,14 @@ module.exports = {
         service: "nextjs",
         priority: 2,
         tls: {
-          certResolver: "le",
+          certresolver: "letsencrypt",
         },
         middlewares: [],
       },
       "adguard-router": {
         entrypoints: ["web"],
         rule: "Host(`dns.corliansa.xyz`) && PathPrefix(`/`)",
-        service: "adguard",
+        service: "noop",
         priority: 2,
         middlewares: ["redirect-to-https"],
       },
@@ -31,7 +31,7 @@ module.exports = {
         service: "adguard",
         priority: 2,
         tls: {
-          certResolver: "le",
+          certresolver: "letsencrypt",
         },
         middlewares: [],
       },
