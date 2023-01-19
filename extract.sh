@@ -5,7 +5,7 @@ set -e # abort on errors
 set -u # abort on unset variables
 
 # adjust these variables according to your setup
-TRAEFIK_CERT_STORE="./letsencrypt/acme/acmev2.json"
+TRAEFIK_CERT_STORE="./letsencrypt/acme/acme.json"
 TRAEFIK_RESOLVER="le"
 OUTPUT_DIR="./letsencrypt/certs"
 

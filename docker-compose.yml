@@ -71,11 +71,11 @@ services:
     environment:
       - HTTP_PATH=http://coolify:3000/webhooks/traefik/main.json
       - JSON_PATH=/usr/app/data/data.js
-  traefik:
+  coolify-proxy:
     image: traefik:latest
     depends_on:
       - replacer
-    container_name: traefik
+    container_name: coolify-proxy
     ports:
       - 80:80
       - 443:443
