@@ -1,6 +1,6 @@
 #! /bin/bash
 
-# Replaces the domain name in the docker-compose.yml and replacer/data/data.js files, throw an error if no domain is provided
+# Replaces the domain name in the docker-compose.yml and replacer/data/config.js files, throw an error if no domain is provided
 if [ -z $1 ] 
 then
   echo "Invalid argument! Syntax: ./setup.sh <YOUR_DOMAIN>"
@@ -10,7 +10,7 @@ fi
 DOMAIN=$1
 
 sed -i.bak "s/corliansa.xyz/${DOMAIN}/g" docker-compose.yml
-sed -i.bak "s/corliansa.xyz/${DOMAIN}/g" replacer/data/data.js
+sed -i.bak "s/corliansa.xyz/${DOMAIN}/g" replacer/data/config.js
 
 find . -name "*.bak" -type f -delete
 
