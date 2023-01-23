@@ -74,6 +74,15 @@ module.exports = {
       },
     },
     services: {
+      noop: {
+        loadBalancer: {
+          servers: [
+            {
+              url: "",
+            },
+          ],
+        },
+      },
       nextjs: {
         loadbalancer: {
           servers: [
