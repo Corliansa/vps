@@ -53,8 +53,9 @@ then
 fi
 
 # Create docker network
-docker network create coolify --attachable || echo "Docker network already exists"
+docker network create --driver bridge coolify --attachable || true
 
 # Add coolify env variables
+touch .env
 grep "COOLIFY_APP_ID=" .env || echo "COOLIFY_APP_ID=$(cat /proc/sys/kernel/random/uuid)" >> .env
 grep "COOLIFY_SECRET_KEY=" .env || echo "COOLIFY_SECRET_KEY=$(echo $(($(date +%s%N) / 1000000)) | sha256sum | base64 | head -c 32)" >> .env
