@@ -43,11 +43,18 @@ fi
 
 
 # Setup tailscale
-curl -fsSL https://tailscale.com/install.sh | sh
-sudo tailscale up --advertise-exit-node
-grep 'net.ipv4.ip_forward = 1' /etc/sysctl.d/99-tailscale.conf || echo 'net.ipv4.ip_forward = 1' | sudo tee -a /etc/sysctl.d/99-tailscale.conf
-grep 'net.ipv6.conf.all.forwarding = 1' /etc/sysctl.d/99-tailscale.conf || echo 'net.ipv6.conf.all.forwarding = 1' | sudo tee -a /etc/sysctl.d/99-tailscale.conf
-sudo sysctl -p /etc/sysctl.d/99-tailscale.conf
+if [ ! -f /etc/sysctl.d/99-tailscale.conf ] 
+then
+  curl -fsSL https://tailscale.com/install.sh | sh
+  sudo tailscale up --advertise-exit-node
+  grep "net.ipv4.ip_forward = 1" /etc/sysctl.d/99-tailscale.conf || echo "net.ipv4.ip_forward = 1" | sudo tee -a /etc/sysctl.d/99-tailscale.conf
+  grep "net.ipv6.conf.all.forwarding = 1" /etc/sysctl.d/99-tailscale.conf || echo "net.ipv6.conf.all.forwarding = 1" | sudo tee -a /etc/sysctl.d/99-tailscale.conf
+  sudo sysctl -p /etc/sysctl.d/99-tailscale.conf
+fi
 
 # Create docker network
-docker network create coolify --attachable
+docker network create coolify --attachable || echo "Docker network already exists"
+
+# Add coolify env variables
+grep "COOLIFY_APP_ID=" .env || echo "COOLIFY_APP_ID=$(cat /proc/sys/kernel/random/uuid)" >> .env
+grep "COOLIFY_SECRET_KEY=" .env || echo "COOLIFY_SECRET_KEY=$(echo $(($(date +%s%N) / 1000000)) | sha256sum | base64 | head -c 32)" >> .env
