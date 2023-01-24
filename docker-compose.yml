@@ -2,7 +2,7 @@ version: "3"
 
 services:
   nextjs:
-    build: ./nextjs
+    image: corliansa/corliansa:latest
     container_name: nextjs
     restart: always
   adguard:
