@@ -69,7 +69,6 @@ services:
       - /var/run/tailscale/tailscaled.sock:/var/run/tailscale/tailscaled.sock:ro
     environment:
       - HTTP_PATH=http://coolify:3000/webhooks/traefik/main.json
-      - JSON_PATH=/usr/app/data/config.js
   coolify-proxy:
     image: traefik:latest
     container_name: coolify-proxy
