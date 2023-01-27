@@ -106,6 +106,10 @@ services:
       sleep 1
       ; done
       && traefik-certs-dumper file --version v2 --watch --source /acme/acme.json --dest /certs --domain-subdir=true'
+  watchtower:
+    image: containrrr/watchtower:latest
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
 
 networks:
   default:
