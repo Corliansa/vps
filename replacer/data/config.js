@@ -1,4 +1,4 @@
-module.exports = {
+module.exports = (config) => ({
   http: {
     routers: {
       "nextjs-router": {
@@ -33,6 +33,16 @@ module.exports = {
         tls: {
           certresolver: "letsencrypt",
         },
+        middlewares: ["tailscale-auth"],
+      },
+      "adguard-router-dns-query": {
+        entrypoints: ["websecure"],
+        rule: "Host(`dns.corliansa.xyz`) && PathPrefix(`/dns-query`)",
+        service: "adguard",
+        priority: 3,
+        tls: {
+          certresolver: "letsencrypt",
+        },
         middlewares: [],
       },
       "portainer-router": {
@@ -54,6 +64,15 @@ module.exports = {
       },
       "coolify-3000-/-secure": {
         middlewares: ["tailscale-auth"],
+      },
+      "coolify-3000-/webhooks-secure": {
+        ...config?.http?.routers?.["coolify-3000-/-secure"],
+        rule: config?.http?.routers?.["coolify-3000-/-secure"]?.rule?.replace(
+          "PathPrefix(`/`)",
+          "PathPrefix(`/webhooks`)"
+        ),
+        priority: 3,
+        middlewares: [],
       },
       "traefik-router": {
         entrypoints: ["web"],
@@ -121,4 +140,4 @@ module.exports = {
       },
     },
   },
-};
+});

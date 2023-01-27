@@ -1,1 +1,2 @@
-module.exports = ["127.0.0.1"];
+// add your list of allowed ips here
+module.exports = [];
