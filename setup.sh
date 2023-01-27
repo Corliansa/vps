@@ -31,17 +31,6 @@ if [ ! -x "$(command -v docker)" ]; then
   sudo apt-get -y install docker-ce docker-ce-cli containerd.io docker-compose-plugin
 fi
 
-# Setup adguard
-if [ ! -f /etc/systemd/resolved.conf.d/adguardhome.conf ] 
-then
-  sudo mkdir -p /etc/systemd/resolved.conf.d/
-  echo -e "[Resolve]\nDNS=127.0.0.1\nDNSStubListener=no" | sudo tee -a /etc/systemd/resolved.conf.d/adguardhome.conf
-  mv /etc/resolv.conf /etc/resolv.conf.backup
-  ln -s /run/systemd/resolve/resolv.conf /etc/resolv.conf
-  systemctl reload-or-restart systemd-resolved
-fi
-
-
 # Setup tailscale
 if [ ! -f /etc/sysctl.d/99-tailscale.conf ] 
 then
@@ -54,8 +43,3 @@ fi
 
 # Create docker network
 docker network create --driver bridge coolify --attachable || true
-
-# Add coolify env variables
-touch .env
-grep "COOLIFY_APP_ID=" .env || echo "COOLIFY_APP_ID=$(cat /proc/sys/kernel/random/uuid)" >> .env
-grep "COOLIFY_SECRET_KEY=" .env || echo "COOLIFY_SECRET_KEY=$(echo $(($(date +%s%N) / 1000000)) | sha256sum | base64 | head -c 32)" >> .env

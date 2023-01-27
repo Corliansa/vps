@@ -1,60 +1,13 @@
 version: "3"
 
 services:
-  nextjs:
-    image: corliansa/corliansa:latest
-    container_name: nextjs
+  portainer-agent:
+    image: portainer/agent:latest
+    container_name: portainer-agent
     restart: always
-  adguard:
-    image: adguard/adguardhome:latest
-    container_name: adguard
-    restart: always
-    ports:
-      - 53:53/tcp
-      - 53:53/udp
-      - 5000:3000/tcp
-      - 853:853/tcp
-      - 853:853/udp
     volumes:
-      - ./adguard/conf/:/opt/adguardhome/conf/:rw
-      - ./adguard/work/:/opt/adguardhome/work/:rw
-      - ./letsencrypt/certs/:/certs/:ro
-  portainer:
-    image: portainer/portainer-ce:latest
-    container_name: portainer
-    restart: always
-    command: "--sslcert /certs/portainer.corliansa.xyz/certificate.crt --sslkey /certs/portainer.corliansa.xyz/privatekey.key"
-    volumes:
-      - ./portainer/data/:/data/:rw
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./letsencrypt/certs/:/certs/:ro
-  coolify:
-    image: coollabsio/coolify:latest
-    restart: always
-    container_name: coolify
-    ports:
-      - 3000:3000
-    volumes:
-      - ./coolify/backups/:/app/backups/:rw
-      - ./coolify/db/:/app/db/:rw
-      - ./coolify/logs/:/app/logs/:rw
-      - ./coolify/ssl/:/app/ssl/:rw
-      - ./letsencrypt/acme/:/etc/traefik/acme/:rw
-      - ./letsencrypt/certs/:/etc/letsencrypt/:rw
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-    environment:
-      - COOLIFY_APP_ID
-      - COOLIFY_SECRET_KEY
-      - COOLIFY_DATABASE_URL=file:../db/prod.db
-      - COOLIFY_IS_ON=docker
-      - COOLIFY_WHITE_LABELED=false
-      - COOLIFY_WHITE_LABELED_ICON=
-      - COOLIFY_AUTO_UPDATE=false
-  fluent-bit:
-    image: coollabsio/coolify-fluent-bit:1.0.0
-    container_name: coolify-fluentbit
-    volumes:
-      - ./coolify/logs/:/app/logs/:rw
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/lib/docker/volumes:/var/lib/docker/volumes
   replacer:
     image: corliansa/ext-replacer:latest
     container_name: replacer
@@ -64,7 +17,7 @@ services:
       - /bin/tailscale:/bin/tailscale:ro
       - /var/run/tailscale/tailscaled.sock:/var/run/tailscale/tailscaled.sock:ro
     environment:
-      - HTTP_PATH=http://coolify:3000/webhooks/traefik/main.json
+      - HTTP_PATH=http://vps:3000/webhooks/traefik/main.json
   coolify-proxy:
     image: traefik:latest
     container_name: coolify-proxy
@@ -78,8 +31,6 @@ services:
     command:
       - --accesslog=true
       - --log.level=DEBUG
-      - --api.dashboard=true
-      - --serversTransport.insecureSkipVerify=true
       - --entrypoints.web.address=:80
       - --entrypoints.web.forwardedHeaders.insecure=true
       - --entrypoints.websecure.address=:443
@@ -94,18 +45,6 @@ services:
     networks:
       - default
       - coolify
-  certs-dumper:
-    image: ldez/traefik-certs-dumper:latest
-    container_name: certs-dumper
-    volumes:
-      - ./letsencrypt/certs/:/certs/:rw
-      - ./letsencrypt/acme/:/acme/:ro
-    entrypoint: sh -c '
-      apk add jq
-      ; while ! [ -e /acme/acme.json ]; do
-      sleep 1
-      ; done
-      && traefik-certs-dumper file --version v2 --watch --source /acme/acme.json --dest /certs --domain-subdir=true'
 
 networks:
   default:

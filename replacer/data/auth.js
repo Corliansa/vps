@@ -4,5 +4,5 @@ module.exports = {
   denyIps: [],
   allowAll: false,
   denyAll: false,
-  allowPeerInsecureIp: false,
+  allowPeerInsecureIp: true,
 };
