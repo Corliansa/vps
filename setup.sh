@@ -1,19 +1,5 @@
 #! /bin/bash
 
-# Replaces the domain name in the docker-compose.yml and replacer/data/config.js files, throw an error if no domain is provided
-if [ -z $1 ] 
-then
-  echo "Invalid argument! Syntax: ./setup.sh <YOUR_DOMAIN>"
-  exit 1
-fi
-
-DOMAIN=$1
-
-sed -i.bak "s/corliansa.xyz/${DOMAIN}/g" docker-compose.yml
-sed -i.bak "s/corliansa.xyz/${DOMAIN}/g" replacer/data/config.js
-
-find . -name "*.bak" -type f -delete
-
 # Setup docker if docker is not installed
 if [ ! -x "$(command -v docker)" ]; then
   sudo apt-get update
@@ -40,6 +26,3 @@ then
   grep "net.ipv6.conf.all.forwarding = 1" /etc/sysctl.d/99-tailscale.conf || echo "net.ipv6.conf.all.forwarding = 1" | sudo tee -a /etc/sysctl.d/99-tailscale.conf
   sudo sysctl -p /etc/sysctl.d/99-tailscale.conf
 fi
-
-# Create docker network
-docker network create --driver bridge coolify --attachable || true

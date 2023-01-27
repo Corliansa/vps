@@ -2,54 +2,9 @@ version: "3"
 
 services:
   portainer-agent:
-    image: "portainer/agent:2.16.2"
+    image: portainer/agent:latest
     container_name: portainer-agent
-    ports:
-      - 9001:9001
     restart: always
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
       - "/var/lib/docker/volumes:/var/lib/docker/volumes"
-  replacer:
-    image: corliansa/ext-replacer:latest
-    container_name: replacer
-    restart: always
-    volumes:
-      - ./replacer/data/:/usr/app/data/:ro
-      - /bin/tailscale:/bin/tailscale:ro
-      - /var/run/tailscale/tailscaled.sock:/var/run/tailscale/tailscaled.sock:ro
-    environment:
-      - HTTP_PATH=http://vps:3000/webhooks/traefik/main.json
-  coolify-proxy:
-    image: traefik:latest
-    container_name: coolify-proxy
-    ports:
-      - 80:80
-      - 443:443
-    restart: always
-    volumes:
-      - ./letsencrypt/acme/:/etc/traefik/acme/:rw
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-    command:
-      - --accesslog=true
-      - --log.level=DEBUG
-      - --entrypoints.web.address=:80
-      - --entrypoints.web.forwardedHeaders.insecure=true
-      - --entrypoints.websecure.address=:443
-      - --entrypoints.websecure.forwardedHeaders.insecure=true
-      - --providers.docker=true
-      - --providers.docker.exposedbydefault=false
-      - --providers.http.endpoint=http://replacer:8080
-      - --providers.http.pollTimeout=5s
-      - --certificatesresolvers.letsencrypt.acme.httpchallenge=true
-      - --certificatesresolvers.letsencrypt.acme.storage=/etc/traefik/acme/acme.json
-      - --certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web
-    networks:
-      - default
-      - coolify
-
-networks:
-  default:
-  coolify:
-    external: true
-    name: coolify

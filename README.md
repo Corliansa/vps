@@ -5,8 +5,7 @@
 1. Clone this repo
    `git clone https://github.com/corliansa/vps`
 1. Point your domain name to your shard vps
-1. Run `setup.sh <YOUR_DOMAIN>` in the clone directory to replace current domain and server name configuration with your own domain and setup docker, folders, and tailscale config. You need to authenticate tailscale with your account in this step.
-1. Point the http path env variables in `docker-compose.yml` to your coolify traefik webhook
+1. Run `setup.sh <YOUR_DOMAIN>` in the clone directory to setup docker, folders, and tailscale config. You need to authenticate tailscale with your account in this step.
 1. Run your docker compose `docker compose up`. Use -d flag to run docker compose in detached mode
 
 ## Services
