@@ -69,7 +69,7 @@ module.exports = (config) => ({
         ...config?.http?.routers?.["coolify-3000-/-secure"],
         rule: config?.http?.routers?.["coolify-3000-/-secure"]?.rule?.replace(
           "PathPrefix(`/`)",
-          "PathPrefix(`/webhooks`)"
+          "PathPrefix(`/webhooks`) && Method(`POST`)"
         ),
         priority: 3,
         middlewares: [],
