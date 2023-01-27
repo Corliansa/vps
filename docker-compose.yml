@@ -4,6 +4,8 @@ services:
   portainer-agent:
     image: portainer/agent:latest
     container_name: portainer-agent
+    ports:
+      - 9001:9001
     restart: always
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
