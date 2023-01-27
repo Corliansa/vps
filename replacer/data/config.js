@@ -14,7 +14,7 @@ module.exports = () => ({
         loadbalancer: {
           servers: [
             {
-              url: "http://portainer-agent:9443",
+              url: "http://portainer-agent:9001",
             },
           ],
         },
