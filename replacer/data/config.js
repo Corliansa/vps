@@ -1,4 +1,4 @@
-module.exports = () => ({
+module.exports = (_) => ({
   http: {
     routers: {
       "portainer-router": {
