@@ -14,7 +14,8 @@ module.exports = () => ({
         loadbalancer: {
           servers: [
             {
-              url: "http://portainer-agent:9001",
+              url: "https://portainer-agent:9001",
+              scheme: "https",
             },
           ],
         },
