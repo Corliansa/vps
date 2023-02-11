@@ -50,6 +50,9 @@ services:
       - COOLIFY_WHITE_LABELED=false
       - COOLIFY_WHITE_LABELED_ICON=
       - COOLIFY_AUTO_UPDATE=false
+    networks:
+      - default
+      - coolify
   fluent-bit:
     image: coollabsio/coolify-fluent-bit:1.0.0
     container_name: coolify-fluentbit
